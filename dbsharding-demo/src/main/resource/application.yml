@@ -1,0 +1,63 @@
+---
+server:
+  port: 8090
+
+#http连接池设置
+http:
+  pool:
+    #最大连接数
+    maxConnections: 20
+    #每路最大连接数
+    maxPerRouteConnections: 5
+
+spring:
+  name: dbsharding-demo
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+  datasources:
+    public:
+      url: jdbc:mysql://localhost:3306/public?useUnicode=true&characterEncoding=gbk&connectTimeout=1000&autoReconnect=true&socketTimeout=12000&zeroDateTimeBehavior=convertToNull
+      username: root
+      password: root
+      driverClassName: com.mysql.jdbc.Driver
+      default: true
+    order00:
+      url: jdbc:mysql://localhost:3306/order_00?useUnicode=true&characterEncoding=gbk&connectTimeout=1000&autoReconnect=true&socketTimeout=12000&zeroDateTimeBehavior=convertToNull
+      username: root
+      password: root
+      driverClassName: com.mysql.jdbc.Driver
+    order01:
+      url: jdbc:mysql://localhost:3306/order_01?useUnicode=true&characterEncoding=gbk&connectTimeout=1000&autoReconnect=true&socketTimeout=12000&zeroDateTimeBehavior=convertToNull
+      username: root
+      password: root
+      driverClassName: com.mysql.jdbc.Driver
+
+  pool:
+    initialSize: 2
+    minIdle: 0
+    maxActive: 5
+    maxWait: 10000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    filters: stat,wall,slf4j
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+  dbsharding:
+    rules:
+      cofig: public
+      user: order00,order01
+  mybatis:
+    mapper-locations: classpath:mapper/*Mapper.xml
+    type-aliases-package: com.wl.dbsharding.entity
+
+
+
